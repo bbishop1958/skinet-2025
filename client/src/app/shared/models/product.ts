@@ -6,6 +6,7 @@ export type Product = {
     picture: string;
     type: string;
     brand: string;
+    pictureUrl: string;
     quantityInStock: number;
 
 }
