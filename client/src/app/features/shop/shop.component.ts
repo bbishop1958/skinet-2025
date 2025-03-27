@@ -2,13 +2,17 @@ import { Component, inject, OnInit } from '@angular/core';
 import { ShopService } from '../../core/services/shop.service';
 import { Product } from '../../shared/models/product';
 import { MatCard } from '@angular/material/card';
-import { ProductItemComponent } from "./product-item/product-item.component";
+import { ProductItemComponent } from './product-item/product-item.component';
 import { MatDialog } from '@angular/material/dialog';
 import { FiltersDialogComponent } from './filters-dialog/filters-dialog.component';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
-import { MatListOption, MatSelectionList, MatSelectionListChange } from '@angular/material/list';
+import {
+  MatListOption,
+  MatSelectionList,
+  MatSelectionListChange,
+} from '@angular/material/list';
 import { ShopParams } from '../../shared/models/shopParams';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { Pagination } from '../../shared/models/pagination';
@@ -17,8 +21,8 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-shop',
   standalone: true,
-  imports: [ 
-    MatCard, 
+  imports: [
+    MatCard,
     ProductItemComponent,
     MatButton,
     MatIcon,
@@ -27,24 +31,23 @@ import { FormsModule } from '@angular/forms';
     MatListOption,
     MatMenuTrigger,
     MatPaginator,
-    FormsModule
-],
+    FormsModule,
+  ],
   templateUrl: './shop.component.html',
-  styleUrl: './shop.component.scss'
+  styleUrl: './shop.component.scss',
 })
 export class ShopComponent implements OnInit {
-
   private shopService = inject(ShopService);
-  private dialogService = inject(MatDialog);  
+  private dialogService = inject(MatDialog);
   products?: Pagination<Product>;
- 
+
   sortOptions = [
-    {name: 'Alphabetical',value: 'name'},
-    {name: 'Price: Low-High',value: 'priceAsc'},
-    {name: 'Price: High-Low',value: 'priceDesc'}
-]
-shopParams = new ShopParams();
-pageSizeOptions = [5,10,15,20]
+    { name: 'Alphabetical', value: 'name' },
+    { name: 'Price: Low-High', value: 'priceAsc' },
+    { name: 'Price: High-Low', value: 'priceDesc' },
+  ];
+  shopParams = new ShopParams();
+  pageSizeOptions = [5, 10, 15, 20];
 
   ngOnInit(): void {
     this.initializeShop();
@@ -52,16 +55,15 @@ pageSizeOptions = [5,10,15,20]
 
   initializeShop() {
     this.shopService.getBrands();
-    this.shopService.getTypes();  
+    this.shopService.getTypes();
     this.getProducts();
   }
 
-  getProducts(){
-      this.shopService.getProducts(this.shopParams).subscribe({
-      next: response => this.products = response,
-      error: error => console.log(error)
-      
-    })
+  getProducts() {
+    this.shopService.getProducts(this.shopParams).subscribe({
+      next: (response) => (this.products = response),
+      error: (error) => console.log(error),
+    });
   }
 
   onSortChange(event: MatSelectionListChange) {
@@ -73,7 +75,7 @@ pageSizeOptions = [5,10,15,20]
     }
   }
 
-  onSearchChange(){
+  onSearchChange() {
     this.shopParams.pageNumber = 1;
     this.getProducts();
   }
@@ -89,23 +91,18 @@ pageSizeOptions = [5,10,15,20]
       minHeight: '500px',
       data: {
         selectedBrands: this.shopParams.brands,
-        selectedTypes: this.shopParams.types
-        
-      }
+        selectedTypes: this.shopParams.types,
+      },
     });
     dialogRef.afterClosed().subscribe({
-      next: result => {
+      next: (result) => {
         if (result) {
-          
           this.shopParams.brands = result.selectedBrands;
           this.shopParams.types = result.selectedTypes;
           this.shopParams.pageNumber = 1;
           this.getProducts();
         }
-      }
-    })
-
+      },
+    });
   }
-  
-
 }
